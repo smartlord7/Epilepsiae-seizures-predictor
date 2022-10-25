@@ -1,0 +1,11 @@
+function [] = analyseDataset(dataset)
+    phases = dataset.(ESPConst.PROP_DATASET_CLASSES);
+    histogram(phases);
+    names = {'Interictal'; 'Preictal'; 'Ictal'; 'Postictal'};
+    set(gca,'xtick', 1:length(names), 'xticklabel', names);
+    title("Patient no " + dataset.Id);
+    xlabel("Phases");
+    ylabel("Occurrences");
+
+    plot(phases);
+end
