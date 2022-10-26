@@ -1,5 +1,6 @@
-function [] = analyseDataset(dataset)
+function [] = analyseDataset(dataset, title_extra)
     phases = dataset.(ESPConst.PROP_DATASET_CLASSES);
+    figure;
     histogram(phases);
     names = {'Interictal'; 'Preictal'; 'Ictal'; 'Postictal'};
     l = length(phases);
@@ -8,7 +9,9 @@ function [] = analyseDataset(dataset)
         names{i} = sprintf("%s - %d (%.3f%%)", names{i}, count, count / l * 100);
     end
     set(gca,'xtick', 1:length(names), 'xticklabel', names, 'fontsize', 8);
-    title("Patient no " + dataset.Id);
+    title_ = "Patient no " + dataset.Id + title_extra;
+    title(title_);
     xlabel("Phases");
-    ylabel("Occurrences");
+    ylabel("Points");
+    saveas(gcf, ESPConst.PATH_IMAGES + title_ + ESPConst.EXTENSION_IMAGE)
 end

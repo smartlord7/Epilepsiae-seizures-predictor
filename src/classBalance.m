@@ -3,7 +3,7 @@ function [features, classifications] = classBalance(features, classifications, m
     classes(end) = [];
     classes = round(classes);
 
-    if mode == 0
+    if mode == 1
         [minCount, idx] = min(counts);
         minClass = classes(idx);
 
@@ -13,14 +13,16 @@ function [features, classifications] = classBalance(features, classifications, m
             diffCount = classCount - minCount;
             [features, classifications] = randomSubsample(features, classifications, class, diffCount);
         end   
-    else
-        [maxCount, idx] = max(counts);
-        maxClass = classes(idx);
-        remainingCount = length(find(classifications ~= maxClass));
-
-        if maxCount > remainingCount
-            diffCount = maxCount - remainingCount;
-            [features, classifications] = randomSubsample(features, classifications, maxClass, diffCount);
+    else 
+        if mode == 2
+            [maxCount, idx] = max(counts);
+            maxClass = classes(idx);
+            remainingCount = length(find(classifications ~= maxClass));
+    
+            if maxCount > remainingCount
+                diffCount = maxCount - remainingCount;
+                [features, classifications] = randomSubsample(features, classifications, maxClass, diffCount);
+            end
         end
     end
 end

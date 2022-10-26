@@ -4,8 +4,11 @@ classdef ESPConst
     
     properties (Constant)
         PATH_INPUT_DATA = "../in/";
+        PATH_IMAGES = "../img/";
         EXTENSION_DATA = ".mat";
-        PATH_DATASET = ESPConst.PATH_INPUT_DATA + "dataset/";
+        EXTENSION_IMAGE = ".png";
+        PATH_DATASET = ESPConst.PATH_INPUT_DATA + "original_dataset/";
+        PATH_DATASET_PREPROCESSED =  ESPConst.PATH_INPUT_DATA + "preprocessed_dataset/";
         PROP_DATASET_FEATURES = "FeatVectSel";
         PROP_DATASET_CLASSES = "Trg";
         CODE_CLASS_NON_ICTAL = 0;

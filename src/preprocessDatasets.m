@@ -1,4 +1,4 @@
-function datasets = preprocessDatasets()
+function datasets = preprocessDatasets(verbose, classBalanceMode)
     files = dir(ESPConst.PATH_DATASET + "*" + ESPConst.EXTENSION_DATA);
     l = length(files);
     datasets = cell(l, 1);
@@ -24,12 +24,32 @@ function datasets = preprocessDatasets()
             idx = end_seizures_idx(j);
             trg(idx : idx + ESPConst.AFTER_INTERVAL_POINTS_POSTICTAL) = ESPConst.CODE_CLASS_ALL_POSTICTAL;
         end
-
+        
         patient_id = strrep(curr_file.name, ESPConst.EXTENSION_DATA, "");
         data.(ESPConst.PROP_DATASET_CLASSES) = trg;
+        data.Id = patient_id;
 
+        if verbose == true
+            analyseDataset(data, "");
+            pause(2);
+        end
+
+        if classBalanceMode ~= 0
+            [data.(ESPConst.PROP_DATASET_FEATURES), ...
+                data.(ESPConst.PROP_DATASET_CLASSES)] = ...
+                classBalance(data.(ESPConst.PROP_DATASET_FEATURES), ...
+                data.(ESPConst.PROP_DATASET_CLASSES), ...
+            classBalanceMode);
+    
+            if verbose == true
+                analyseDataset(data, " - Balanced (" + classBalanceMode + ")");
+                pause(2);
+            end
+        end
+
+        save(ESPConst.PATH_DATASET_PREPROCESSED + patient_id + ...
+            "-" + classBalanceMode + ESPConst.EXTENSION_DATA, "data", "-mat");
         datasets{i} = data;
-        datasets{i}.Id = patient_id;
     end
 end
 
