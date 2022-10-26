@@ -27,6 +27,7 @@ function datasets = preprocessDatasets()
 
         patient_id = strrep(curr_file.name, ESPConst.EXTENSION_DATA, "");
         data.(ESPConst.PROP_DATASET_CLASSES) = trg;
+
         datasets{i} = data;
         datasets{i}.Id = patient_id;
     end
