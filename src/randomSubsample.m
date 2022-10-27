@@ -3,6 +3,6 @@ function [features, classifications] = randomSubsample(features, classifications
     rn = randperm(length(classIdx));
     rn = rn(1:count);
     rnClassIdx = classIdx(rn);
-    features(rnClassIdx) = [];
+    features(rnClassIdx,:) = [];
     classifications(rnClassIdx) = [];
 end

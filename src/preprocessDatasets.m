@@ -30,26 +30,29 @@ function datasets = preprocessDatasets(verbose, classBalanceMode)
         data.Id = patient_id;
 
         if verbose == true
-            analyseDataset(data, "");
+            analyseDataset(data, " - Not balanced");
             pause(2);
         end
 
-        if classBalanceMode ~= 0
-            [data.(ESPConst.PROP_DATASET_FEATURES), ...
-                data.(ESPConst.PROP_DATASET_CLASSES)] = ...
+        if classBalanceMode ~= ESPConst.BALANCE_MODE_NONE
+            [f, ...
+                trg] = ...
                 classBalance(data.(ESPConst.PROP_DATASET_FEATURES), ...
-                data.(ESPConst.PROP_DATASET_CLASSES), ...
+                trg, ...
             classBalanceMode);
-    
+
+            data.(ESPConst.PROP_DATASET_FEATURES) = f;
+            data.(ESPConst.PROP_DATASET_CLASSES) = trg;
+
             if verbose == true
                 analyseDataset(data, " - Balanced (" + classBalanceMode + ")");
                 pause(2);
             end
         end
 
+        datasets{i} = data;
         save(ESPConst.PATH_DATASET_PREPROCESSED + patient_id + ...
             "-" + classBalanceMode + ESPConst.EXTENSION_DATA, "data", "-mat");
-        datasets{i} = data;
     end
 end
 

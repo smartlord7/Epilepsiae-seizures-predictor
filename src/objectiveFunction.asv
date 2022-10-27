@@ -1,0 +1,11 @@
+function [objFcn] = objectiveFunction(nn, options,p, t, pv, tv)
+    objFcn = @valErrorFcn;
+    function [valError, cons, fileName] = valErrorFcn(optVars)
+        tNN = trainNetwork(p, t, nn, options);
+        predicted = classify(tNN, pv);
+        valError = 1 - mean(predicted == tv);
+        fileName = num2str(valError) + ESPConst.EXTENSION_DATA;
+        save(fileName, 'tNN','valError','options')
+        cons = [];
+    end
+end
