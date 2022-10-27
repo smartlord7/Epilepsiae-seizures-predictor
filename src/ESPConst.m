@@ -5,6 +5,7 @@ classdef ESPConst
     properties (Constant)
         PATH_INPUT_DATA = "../in/";
         PATH_IMAGES = "../img/";
+        PATH_TRAINED_NNS = "../out/nn/"
         EXTENSION_DATA = ".mat";
         EXTENSION_IMAGE = ".png";
         PATH_DATASET = ESPConst.PATH_INPUT_DATA + "original_dataset/";

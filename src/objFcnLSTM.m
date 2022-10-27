@@ -1,19 +1,22 @@
-function [objFcn] = objFcnLSTM(p, t, pv, tv)
+function [objFcn] = objFcnLSTM(p, t, pv, tv, inputName)
     objFcn = @valErrorFcn;
     function [valError, cons, fileName] = valErrorFcn(optVars)
         layers = [
                sequenceInputLayer(ESPConst.N_INPUT_FEATURES)
-               lstmLayer(512, OutputMode="last")
+               lstmLayer(200, OutputMode="last")
                fullyConnectedLayer(ESPConst.N_OUTPUT_CLASSES_ALL)
                softmaxLayer
                classificationLayer
                  ];
-        miniBatchSize = 50;
-        validationFrequency = 300;
-        options = trainingOptions('adam', ...
+        miniBatchSize = 64;
+        validationFrequency = floor(numel(t) / miniBatchSize);
+        options = trainingOptions('sgdm', ...
             'InitialLearnRate', optVars.InitialLearnRate, ...
-            'MaxEpochs', 10, ... 
+            'Momentum',optVars.Momentum, ...
+            'MaxEpochs', 60, ... 
             'LearnRateSchedule', 'piecewise', ...
+            'LearnRateDropPeriod', 40, ...
+            'LearnRateDropFactor', 0.1, ...
             'MiniBatchSize', miniBatchSize, ...
             'L2Regularization', optVars.L2Regularization, ...
             'ExecutionEnvironment', "cpu", ...
@@ -24,9 +27,9 @@ function [objFcn] = objFcnLSTM(p, t, pv, tv)
 
         tNN = trainNetwork(p, t, layers, options);
         predicted = classify(tNN, pv);
-        valError = immse(predicted, tv);
-        fileName = num2str(valError) + "LSTM" + ".mat";
-        save(fileName, 'tNN','valError','options')
+        valError =  1 - mean(predicted == transpose(tv));
+        fileName = num2str(valError) + "_LSTM_" + inputName + ESPConst.EXTENSION_DATA;
+        save(ESPConst.PATH_TRAINED_NNS + fileName, 'tNN','valError','options')
         cons = [];
     end
 end
