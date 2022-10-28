@@ -1,7 +1,8 @@
 function [] = bayesOptimizationLSTM(trainInput, valInput, inputName)
     optimVars = [
         optimizableVariable('SectionDepth', [20 30], 'Type', 'integer')
-        optimizableVariable('InitialLearnRate', [0.4 1], 'Transform' ,'log')
+        optimizableVariable('InitialLearnRate', [0.1 1], 'Transform' ,'log')
+        optimizableVariable('NumHiddenUnits', [100 5000], 'Type', 'integer')
         optimizableVariable('Momentum', [0.8 0.98])
         optimizableVariable('L2Regularization', [1e-4 1e-2], 'Transform', 'log')
         ];
@@ -15,7 +16,7 @@ function [] = bayesOptimizationLSTM(trainInput, valInput, inputName)
         objFcn, optimVars, ...
         'MaxTime', ESPConst.MAX_TIME_GRIDSEARCH, ...
         'IsObjectiveDeterministic', false, ...
-        'UseParallel', false, ...
+        'UseParallel', true, ...
         'Verbose', 1);
 end
 
