@@ -131,3 +131,5 @@ dmypy.json
 in/dataset/
 
 in/
+
+out/
