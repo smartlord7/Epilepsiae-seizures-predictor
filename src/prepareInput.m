@@ -1,6 +1,4 @@
-function [trainInput, valInput] = prepareInput(fileName)
-    tRatio = ESPConst.RATIO_TRAIN;
-    vRatio = ESPConst.RATIO_VAL;
+function [trainInput, valInput] = prepareInput(fileName, tRatio, vRatio)
     tstRatio = ESPConst.RATIO_TEST;
 
     dataset = load(fileName).data;
