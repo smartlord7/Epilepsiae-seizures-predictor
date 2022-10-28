@@ -28,7 +28,7 @@ function [objFcn] = objFcnLSTM(p, t, pv, tv, inputName)
         tNN = trainNetwork(p, t, layers, options);
         predicted = classify(tNN, pv);
         valError =  1 - mean(predicted == transpose(tv));
-        fileName = num2str(valError) + "_LSTM_" + inputName + ESPConst.EXTENSION_DATA;
+        fileName = num2str(valError) + "_LSTM_" + inputName;
         save(ESPConst.PATH_TRAINED_NNS + fileName, 'tNN','valError','options');
         cons = [];
     end

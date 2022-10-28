@@ -5,7 +5,8 @@ classdef ESPConst
     properties (Constant)
         PATH_INPUT_DATA = "../in/";
         PATH_IMAGES = "../img/";
-        PATH_TRAINED_NNS = "../out/nn/"
+        PATH_TRAINED_NNS = "../out/nn/";
+        PATH_AES = ESPConst.PATH_TRAINED_NNS + "ae/";
         EXTENSION_DATA = ".mat";
         EXTENSION_IMAGE = ".png";
         PATH_DATASET = ESPConst.PATH_INPUT_DATA + "original_dataset/";
@@ -22,6 +23,7 @@ classdef ESPConst
         AFTER_INTERVAL_POINTS_POSTICTAL = 300; % 5 minutes
         N_INPUT_FEATURES = 29;
         N_OUTPUT_CLASSES_ALL = 4;
+        SEED_RANDOM_SUBSAMPLE = 1;
 
         MAX_TIME_GRIDSEARCH = 14 * 60 * 60;
 

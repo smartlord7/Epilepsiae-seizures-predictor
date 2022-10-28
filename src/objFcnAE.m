@@ -11,7 +11,7 @@ function [objFcn] = objFcnAE(p, t, inputName)
             code = decode(ae, code);
         end
         valError = mse(p - code);
-        fileName = num2str(valError) + "_AE_" + inputName + ESPConst.EXTENSION_DATA;
+        fileName = num2str(valError) + "_AE_" + inputName;
         save(ESPConst.PATH_TRAINED_NNS + fileName, 'stackedAE', 'features', 'valError');
         cons = [];
     end

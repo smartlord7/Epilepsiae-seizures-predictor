@@ -13,5 +13,5 @@ function [] = analyseDataset(dataset, title_extra)
     title(title_);
     xlabel("Phases");
     ylabel("Points");
-    saveas(gcf, ESPConst.PATH_IMAGES + title_ + ESPConst.EXTENSION_IMAGE)
+    saveas(gcf, ESPConst.PATH_IMAGES + title_ + ESPConst.EXTENSION_IMAGE);
 end
