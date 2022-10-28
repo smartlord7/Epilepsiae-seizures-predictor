@@ -3,15 +3,16 @@ function [objFcn] = objFcnAE(p, t, inputName)
     function [valError, cons, fileName] = valErrorFcn(optVars)
         optVarsArr = cell(1, 5);
         optVarsArr(:) = {optVars};
-        [stackedAE, features] = stackAE(p, optVarsArr);
-        softnet = trainSoftmaxLayer(features, t, 'LossFunction', 'crossentropy');
-        deepNet = stack(stackedAE, softnet);
-        deepNet = train(deepNet, p, t);
-        predicted = int32(deepNet(p));
-        plotconfusion(categorical(t), categorical(predicted));
-        valError =  1 - mean(predicted == t);
+        [aes, stackedAE, features] = stackAE(p, optVarsArr);
+        l = length(aes);
+        code = features;
+        for i=l:-1:1
+            ae = aes{i};
+            code = decode(ae, code);
+        end
+        valError = mse(p - code);
         fileName = num2str(valError) + "_AE_" + inputName + ESPConst.EXTENSION_DATA;
-        save(ESPConst.PATH_TRAINED_NNS + fileName, 'deepNet', 'features', 'valError');
+        save(ESPConst.PATH_TRAINED_NNS + fileName, 'stackedAE', 'features', 'valError');
         cons = [];
     end
 end
