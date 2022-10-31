@@ -25,7 +25,7 @@ classdef ESPConst
         N_OUTPUT_CLASSES_ALL = 4;
         SEED_RANDOM_SUBSAMPLE = 1;
 
-        MAX_TIME_GRIDSEARCH = 14 * 60 * 60;
+        MAX_TIME_GRIDSEARCH = 3 * 60 * 60;
 
         BALANCE_MODE_NONE = 0;
         BALANCE_MODE_EQUAL = 1;
@@ -36,9 +36,9 @@ classdef ESPConst
             ESPConst.BALANCE_MODE_LARGEST_SUM
         ];
 
-        RATIO_TRAIN = 0.75;
-        RATIO_VAL = 0.25;
-        RATIO_TEST = 0.0;
+        RATIO_TRAIN = 1.00;
+        RATIO_VAL = 0.00;
+        RATIO_TEST = 0.00;
     end
 end
 
