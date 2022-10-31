@@ -6,6 +6,7 @@ function [] = bayesOptimizationLSTM(trainInput, valInput, inputName)
         optimizableVariable('Momentum', [0.8 0.98])
         optimizableVariable('L2Regularization', [1e-4 1e-2], 'Transform', 'log')
         ];
+    
     p = trainInput.(ESPConst.PROP_DATASET_FEATURES);
     t = trainInput.(ESPConst.PROP_DATASET_CLASSES);
     pv = valInput.(ESPConst.PROP_DATASET_FEATURES);
@@ -16,7 +17,7 @@ function [] = bayesOptimizationLSTM(trainInput, valInput, inputName)
         objFcn, optimVars, ...
         'MaxTime', ESPConst.MAX_TIME_GRIDSEARCH, ...
         'IsObjectiveDeterministic', false, ...
-        'UseParallel', true, ...
+        'UseParallel', false, ...
         'Verbose', 1);
 end
 

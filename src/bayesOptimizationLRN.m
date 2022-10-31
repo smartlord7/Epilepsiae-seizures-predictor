@@ -1,0 +1,26 @@
+function [] = bayesOptimizationLRN(trainInput, valInput, inputName)
+    optVars = [
+            optimizableVariable('LayerDelays', [1 10], 'Type','integer')
+            optimizableVariable('HiddenSizes', [1 10], 'Type','integer')
+            optimizableVariable('InitialLearnRate', [0.1 1], 'Transform', 'log')
+            optimizableVariable('MaxEpochs', [50 500], 'Type', 'integer')
+            optimizableVariable('TrainFcn', {'trainbr', 'trainbfg', 'trainrp', ...
+            'trainscg', 'traincgb', 'traincgf', ...
+            'traincgp', 'trainoss', 'traingdx', ...
+            'traingdm', 'traingd'})
+        ];
+
+    p = trainInput.(ESPConst.PROP_DATASET_FEATURES);
+    t = trainInput.(ESPConst.PROP_DATASET_CLASSES);
+    pv = valInput.(ESPConst.PROP_DATASET_FEATURES);
+    tv = valInput.(ESPConst.PROP_DATASET_CLASSES);
+
+    objFcn = objFcnLRN(p, t, pv, tv, inputName);
+    bayesOpt = bayesopt( ...
+        objFcn, optVars, ...
+        'MaxTime', ESPConst.MAX_TIME_GRIDSEARCH, ...
+        'IsObjectiveDeterministic', false, ...
+        'UseParallel', false, ...
+        'Verbose', 1);
+end
+
