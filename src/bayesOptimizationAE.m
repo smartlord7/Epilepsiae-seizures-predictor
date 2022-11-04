@@ -1,4 +1,4 @@
--function [] = bayesOptimizationAE(trainInput, inputName)
+function [] = bayesOptimizationAE(trainInput, inputName)
     optVars = [
             optimizableVariable('EncoderTransferFunction', {'logsig' 'satlin'}, 'type', 'categorical')
             optimizableVariable('DecoderTransferFunction', {'logsig' 'satlin' 'purelin'}, 'type', 'categorical')

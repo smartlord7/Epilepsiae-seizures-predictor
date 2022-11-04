@@ -12,7 +12,7 @@ function [objFcn] = objFcnAE(p, t, inputName)
         end
         valError = mse(p - code);
         fileName = num2str(valError) + "_AE_" + inputName;
-        save(ESPConst.PATH_TRAINED_NNS + fileName, 'stackedAE', 'features', 'valError');
+        save(ESPConst.PATH_AES + fileName, 'stackedAE', 'features', 'valError');
         cons = [];
     end
 end
