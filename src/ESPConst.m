@@ -13,6 +13,7 @@ classdef ESPConst
         EXTENSION_IMAGE = ".png";
         PATH_DATASET = ESPConst.PATH_INPUT_DATA + "original_dataset/";
         PATH_DATASET_PREPROCESSED =  ESPConst.PATH_INPUT_DATA + "preprocessed_dataset/";
+        PATH_DATASET_AS_IMAGE = ESPConst.PATH_INPUT_DATA + "as_img_dataset/";
         PROP_DATASET_FEATURES = "FeatVectSel";
         PROP_DATASET_CLASSES = "Trg";
         CODE_CLASS_NON_ICTAL = 0;

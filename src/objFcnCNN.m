@@ -2,7 +2,7 @@ function [objFcn] = objFcnCNN(p, t, pv, tv, inputName)
     objFcn = @valErrorFcn;
     function [valError, cons, fileName] = valErrorFcn(optVars)
         layers = [
-               sequenceInputLayer(ESPConst.N_INPUT_FEATURES)
+               imageInputLayer(ESPConst.N_INPUT_FEATURES, optVars.ImageHeight)
                bilstmLayer(optVars.NumHiddenUnits,OutputMode="last")
                fullyConnectedLayer(ESPConst.N_OUTPUT_CLASSES_ALL)
                softmaxLayer
