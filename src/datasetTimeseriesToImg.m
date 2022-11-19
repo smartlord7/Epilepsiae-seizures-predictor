@@ -1,22 +1,22 @@
-function [images] = datasetTimeseriesToImg(height)
-    files = dir(ESPConst.PATH_DATASET + "*" + ESPConst.EXTENSION_DATA);
-    l = length(files);
-    images = cell(1, l);
-    for i=(1:l)
-        currFile = files(i);
-        fileName = currFile.name;
-        data = load(ESPConst.PATH_DATASET + fileName);
-        fileName = replace(fileName, ESPConst.EXTENSION_DATA, "");
-        features = data.(ESPConst.PROP_DATASET_FEATURES);
-        rows = size(features, 1);
-        dvs = size(features, 1) / height;
+function [images, labels] = datasetTimeseriesToImg(features, classes, name, height)
+    images = [];
+    labels = [];
+    for j=(1:length(ESPConst.CODES_CLASSES))
+        class = ESPConst.CODES_CLASSES(j);
+        classIdx = (classes == class);
+        classFeatures = features(classIdx, :);
+        rows = size(classFeatures, 1);
+        dvs = size(classFeatures, 1) / height;
         f = floor(dvs);
         d = dvs - f;
         newRows = int32(rows - (1 + d) * height);
-        features = features((1:newRows), :);
-        features = reshape(features, 29, 29, 1, []);
-        data.(ESPConst.PROP_DATASET_FEATURES) = features;
-        images = data;
-        save(ESPConst.PATH_DATASET_AS_IMAGE + fileName + "-" + height);
+        classImages = classFeatures((1:newRows), :);
+        classImages = reshape(classImages, size(classFeatures, 2), height, []);
+        images = [images classImages];
+        label = class * ones(1, size(classImages, 3));
+        labels = [labels label];
     end
+    
+    labels = categorical(labels)
+    save(ESPConst.PATH_DATASET_AS_IMAGE + name + "-" + height, "images", "labels");
 end

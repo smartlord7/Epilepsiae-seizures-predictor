@@ -1,6 +1,5 @@
-function [trainInput, valInput] = prepareInput(fileName, tRatio, vRatio)
+function [trainInput, valInput] = prepareInput(fileName, tRatio, vRatio, isTimeSeries)
     tstRatio = ESPConst.RATIO_TEST;
-
     dataset = load(fileName).data;
     features = dataset.(ESPConst.PROP_DATASET_FEATURES);
     classes = dataset.(ESPConst.PROP_DATASET_CLASSES);

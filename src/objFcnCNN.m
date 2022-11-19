@@ -1,9 +1,16 @@
 function [objFcn] = objFcnCNN(p, t, pv, tv, inputName)
     objFcn = @valErrorFcn;
     function [valError, cons, fileName] = valErrorFcn(optVars)
+
+        p = datasetTimeseriesToImg(p, t, inputName, optVars.ImageHeight);
+        pv = datasetTimeseriesToImg(pv, tv, inputName, optVars.ImageHeight);
+
         layers = [
-               imageInputLayer(ESPConst.N_INPUT_FEATURES, optVars.ImageHeight)
-               bilstmLayer(optVars.NumHiddenUnits,OutputMode="last")
+               imageInputLayer([ESPConst.N_INPUT_FEATURES, optVars.ImageHeight, 1])
+               convolution2dLayer([optVars.FilterSizeX optVars.FilterSizeY], optVars.NumFilters)
+               maxPooling2dLayer(optVars.PoolSize)
+               batchNormalizationLayer
+               flattenLayer
                fullyConnectedLayer(ESPConst.N_OUTPUT_CLASSES_ALL)
                softmaxLayer
                classificationLayer
@@ -16,13 +23,14 @@ function [objFcn] = objFcnCNN(p, t, pv, tv, inputName)
             'SequencePaddingDirection', "left", ...
             'Shuffle', "every-epoch", ...
             'LearnRateSchedule', 'piecewise', ...
-            'LearnRateDropPeriod', optVars.MaxEpochs / 3, ...
+            'LearnRateDropPeriod', round(optVars.MaxEpochs / 3), ...
             'LearnRateDropFactor', optVars.LearnRateDropFactor, ...
             'MiniBatchSize', optVars.MiniBatchSize, ...
             'L2Regularization', optVars.L2Regularization, ...
-            'ExecutionEnvironment', "gpu", ...
+            'ExecutionEnvironment', "cpu", ...
             'Verbose', true, ...
             'Plots', 'training-progress', ...
+            'ValidationData', {pv, tv}, ...
             'ValidationFrequency', validationFrequency);
 
         if optVars.Solver == "sgdm"
@@ -32,8 +40,8 @@ function [objFcn] = objFcnCNN(p, t, pv, tv, inputName)
         tNN = trainNetwork(p, t, layers, options);
         predicted = classify(tNN, pv);
         valError =  1 - mean(predicted == transpose(tv));
-        fileName = num2str(valError) + "_LSTM_" + inputName;
-        save(ESPConst.PATH_LSTMS + fileName, 'tNN','valError','options');
+        fileName = num2str(valError) + "_CNN_" + inputName;
+        save(ESPConst.PATH_CNNS + fileName, 'tNN','valError','options');
         cons = [];
     end
 end
