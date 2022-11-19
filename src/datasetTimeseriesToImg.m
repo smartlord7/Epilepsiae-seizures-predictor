@@ -12,11 +12,13 @@ function [images, labels] = datasetTimeseriesToImg(features, classes, name, heig
         newRows = int32(rows - (1 + d) * height);
         classImages = classFeatures((1:newRows), :);
         classImages = reshape(classImages, size(classFeatures, 2), height, []);
-        images = [images classImages];
+        images = cat(3, images, classImages);
         label = class * ones(1, size(classImages, 3));
         labels = [labels label];
     end
     
-    labels = categorical(labels)
+    sz = size(images);
+    images = reshape(images, sz(1), sz(2), 1, sz(3));
+    labels = categorical(categorical(labels));
     save(ESPConst.PATH_DATASET_AS_IMAGE + name + "-" + height, "images", "labels");
 end

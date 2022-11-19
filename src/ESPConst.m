@@ -9,7 +9,7 @@ classdef ESPConst
         PATH_AES = ESPConst.PATH_TRAINED_NNS + "ae/";
         PATH_LRNS = ESPConst.PATH_TRAINED_NNS + "lrn/";
         PATH_LSTMS = ESPConst.PATH_TRAINED_NNS + "lstm/";
-        PATH_CNN = ESPConst.PATH_TRAINED_NNS + "cnn/";
+        PATH_CNNS = ESPConst.PATH_TRAINED_NNS + "cnn/";
         EXTENSION_DATA = ".mat";
         EXTENSION_IMAGE = ".png";
         PATH_DATASET = ESPConst.PATH_INPUT_DATA + "original_dataset/";

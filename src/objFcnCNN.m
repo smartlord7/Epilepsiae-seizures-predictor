@@ -2,15 +2,12 @@ function [objFcn] = objFcnCNN(p, t, pv, tv, inputName)
     objFcn = @valErrorFcn;
     function [valError, cons, fileName] = valErrorFcn(optVars)
 
-        p = datasetTimeseriesToImg(p, t, inputName, optVars.ImageHeight);
-        pv = datasetTimeseriesToImg(pv, tv, inputName, optVars.ImageHeight);
+        [pImg, tImg] = datasetTimeseriesToImg(p, t, inputName, optVars.ImageHeight);
+        [pvImg, tvImg] = datasetTimeseriesToImg(pv, tv, inputName, optVars.ImageHeight);
 
         layers = [
                imageInputLayer([ESPConst.N_INPUT_FEATURES, optVars.ImageHeight, 1])
                convolution2dLayer([optVars.FilterSizeX optVars.FilterSizeY], optVars.NumFilters)
-               maxPooling2dLayer(optVars.PoolSize)
-               batchNormalizationLayer
-               flattenLayer
                fullyConnectedLayer(ESPConst.N_OUTPUT_CLASSES_ALL)
                softmaxLayer
                classificationLayer
@@ -30,16 +27,16 @@ function [objFcn] = objFcnCNN(p, t, pv, tv, inputName)
             'ExecutionEnvironment', "cpu", ...
             'Verbose', true, ...
             'Plots', 'training-progress', ...
-            'ValidationData', {pv, tv}, ...
+            'ValidationData', {pvImg, tvImg}, ...
             'ValidationFrequency', validationFrequency);
 
         if optVars.Solver == "sgdm"
             options.Momentum = optVars.Momentum;
         end
 
-        tNN = trainNetwork(p, t, layers, options);
-        predicted = classify(tNN, pv);
-        valError =  1 - mean(predicted == transpose(tv));
+        tNN = trainNetwork(pImg, tImg, layers, options);
+        predicted = classify(tNN, pvImg);
+        valError =  1 - mean(predicted == transpose(tvImg));
         fileName = num2str(valError) + "_CNN_" + inputName;
         save(ESPConst.PATH_CNNS + fileName, 'tNN','valError','options');
         cons = [];
