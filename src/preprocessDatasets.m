@@ -22,7 +22,7 @@ function datasets = preprocessDatasets(verbose, classBalanceMode)
     
         for j=(1:length(end_seizures_idx))
             idx = end_seizures_idx(j);
-            trg(idx : idx + ESPConst.AFTER_INTERVAL_POINTS_POSTICTAL) = ESPConst.CODE_CLASS_ALL_POSTICTAL;
+            trg(idx : idx + ESPConst.AFTER_INTERVAL_POINTS_POSICTAL) = ESPConst.CODE_CLASS_ALL_POSICTAL;
         end
         
         patient_id = strrep(curr_file.name, ESPConst.EXTENSION_DATA, "");
