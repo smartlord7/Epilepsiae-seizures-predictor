@@ -1,8 +1,8 @@
-function [accuracy, SE, SP, valError, options] = getClassifierPerformance(net, data, type, method)
+function [r] = getClassifierPerformance(net, data, type, min, max)
     % net - rede a ser usada
     % data - dados da pessoa a ser testada
     % type - detecao ou previsao
-    % method - ponto a ponto, 10 pontos consecutivos, 5 dos ultimos 10 pontos
+    % min, max - min em max pontos. 0 ponto a ponto; min=max consecutivos
 
     nn = load(net);
     dataset = load(data).data; % data ja vem com as classes
@@ -30,6 +30,7 @@ function [accuracy, SE, SP, valError, options] = getClassifierPerformance(net, d
         % parar (error function?)
     end 
 
+    %{
     auxMethods = 0;
     if method == "10_consecutive_points"
         auxMethods = 10;
@@ -41,16 +42,24 @@ function [accuracy, SE, SP, valError, options] = getClassifierPerformance(net, d
             % parar (error function?)
         end
     end
+    %}
     
-    if auxMethods ~= 0
-        for i=1:size(predicted)-10
-            temp = predicted(i:i+10);
-            mostOccured = mode(temp);
-            timesOccured = sum(temp==mostOccured);  
-            
-            if timesOccured >= auxMethods
-                predicted(i) = mostOccured;
-            end
+    if min < 0 || max < 0 || mod(min,1) ~= 0 || mod(max,1) ~= 0
+        disp("Insert only positive integers");
+        % parar (error function?)
+    end
+    if max < min
+        disp("(min) can not be greater than (max)");
+        % parar (error function?)
+    end
+
+    for i=1:size(predicted)-max
+        temp = predicted(i:i+max);
+        mostOccured = mode(temp);
+        timesOccured = sum(temp==mostOccured);  
+        
+        if timesOccured >= min
+            predicted(i) = mostOccured;
         end
     end
 
@@ -69,6 +78,9 @@ function [accuracy, SE, SP, valError, options] = getClassifierPerformance(net, d
     SP = TN(typeClass)/(TN(typeClass) + FP(typeClass));
     valError = nn.valError;
     options = nn.options;
+    r = struct("accuracy",accuracy, "SE", SE, "SP", SP, "valError", valError, "options", options);
+
+    disp("Value Error: " + valError)
     disp("Accuracy: " + accuracy);
     disp("SE: " + SE);
     disp("SP: " + SP);
