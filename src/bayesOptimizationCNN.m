@@ -9,10 +9,10 @@ function [] = bayesOptimizationCNN(trainInput, valInput, inputName)
         optimizableVariable('Momentum', [0.1 1])
         optimizableVariable('L2Regularization', [1e-4 1e-2], 'Transform', 'log')
 
-        optimizableVariable('ImageHeight', [10 29], 'Type', 'integer')
+        optimizableVariable('ImageHeight', [10 50], 'Type', 'integer')
         optimizableVariable('FilterSizeX', [2 10], 'Type', 'integer')
         optimizableVariable('FilterSizeY', [2 10], 'Type', 'integer')
-        optimizableVariable('NumFilters', [10 20], 'Type', 'integer')
+        optimizableVariable('NumFilters', [10 40], 'Type', 'integer')
         optimizableVariable('PoolSize', [5 8], 'Type', 'integer')
         ];
     
@@ -26,7 +26,7 @@ function [] = bayesOptimizationCNN(trainInput, valInput, inputName)
         objFcn, optimVars, ...
         'MaxTime', ESPConst.MAX_TIME_GRIDSEARCH, ...
         'IsObjectiveDeterministic', false, ...
-        'UseParallel', false, ...
+        'UseParallel', true, ...
         'Verbose', 1);
 end
 

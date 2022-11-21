@@ -1,6 +1,6 @@
 function [] = bayesOptimizationAE(trainInput, inputName)
     optVars = [
-            optimizableVariable('NumLayers', [3 10], 'Type', 'integer')
+            optimizableVariable('NumLayers', [ 2], 'Type', 'integer')
             optimizableVariable('MinFeatures', [1 5], 'Type', 'integer')
             optimizableVariable('EncoderTransferFunction', {'logsig' 'satlin'}, 'type', 'categorical')
             optimizableVariable('DecoderTransferFunction', {'logsig' 'satlin' 'purelin'}, 'type', 'categorical')
@@ -19,7 +19,7 @@ function [] = bayesOptimizationAE(trainInput, inputName)
         objFcn, optVars, ...
         'MaxTime', ESPConst.MAX_TIME_GRIDSEARCH, ...
         'IsObjectiveDeterministic', false, ...
-        'UseParallel', true, ...
+        'UseParallel', false, ...
         'Verbose', 1);
 end
 
