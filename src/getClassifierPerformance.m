@@ -1,15 +1,28 @@
-function [r] = getClassifierPerformance(net, data, type, min, max)
-    nn = load(net);
+function [r] = getClassifierPerformance(path, data, type, min, mx)
+    struc = load(path);
+    nn = struc.tNN;
     dataset = load(data).data;
     
     features = dataset.(ESPConst.PROP_DATASET_FEATURES);
-    features = mat2cell(features.', size(features,2), ones(size(features,1),1)).';
     classes = dataset.(ESPConst.PROP_DATASET_CLASSES);
     classes = categorical(classes);
 
-    predicted = classify(nn.tNN, features);
+    c = class(nn);
+    if c == "network"
+        view(nn);
+        predicted = nn(transpose(features));
+        [~, c] = size(predicted);
+        m = max(predicted, [], 1);
+        idx = (predicted == m);
+        [row, ~] = find(idx, c, 'first');
+        predicted = categorical(row);
+    else
+        analyzeNetwork(nn);
+        features = mat2cell(features.', size(features,2), ones(size(features,1),1)).';
+        predicted = classify(nn, features);
+    end
 
-    l = length(length(ESPConst.CODES_CLASSES));
+    l = length(ESPConst.CODES_CLASSES);
     TP = zeros(1, l);
     TN = zeros(1, l);
     FP = zeros(1, l);
@@ -24,15 +37,15 @@ function [r] = getClassifierPerformance(net, data, type, min, max)
         disp("Wrong type. Choose 'detection' or 'prediction'");
     end 
 
-    if min < 0 || max < 0 || mod(min, 1) ~= 0 || mod(max, 1) ~= 0
+    if min < 0 || mx < 0 || mod(min, 1) ~= 0 || mod(mx, 1) ~= 0
         disp("Insert only positive integers");
     end
-    if max < min
-        disp("(min) can not be greater than (max)");
+    if mx < min
+        disp("(min) can not be greater than (mx)");
     end
 
-    for i=1:size(predicted)-max
-        temp = predicted(i:i+max);
+    for i=1:size(predicted)-mx
+        temp = predicted(i:i+mx);
         mostOccured = mode(temp);
         timesOccured = sum(temp==mostOccured);  
         
@@ -55,13 +68,11 @@ function [r] = getClassifierPerformance(net, data, type, min, max)
     accuracy = sum(predicted == classes) / numel(classes);
     SE = TP(typeClass) / (TP(typeClass) + FN(typeClass));
     SP = TN(typeClass) / (TN(typeClass) + FP(typeClass));
-    valError = nn.valError;
-    options = nn.options;
+    valError = struc.valError;
     r = struct("accuracy", accuracy, ...
         "SE", SE, ...
         "SP", SP, ...
-        "valError", valError, ...
-        "options", options);
+        "valError", valError);
 
     disp("Value Error: " + valError)
     disp("Accuracy: " + accuracy);
