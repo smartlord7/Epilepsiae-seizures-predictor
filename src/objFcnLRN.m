@@ -10,10 +10,10 @@ function [objFcn] = objFcnLRN(p, t, inputName)
             ESPConst.CODE_CLASS_ALL_POSICTAL optVars.ErrorWeightPosictal];
         errorWeights = getErrorWeights(t, classWeights);
         [xs, xi, ai, ts, ew] = preparets(lrn, transpose(p), con2seq(t), {}, errorWeights);
-        [lrn, info] = train(lrn, xs, ts, xi, ai, ew);
+        [tNN, info] = train(lrn, xs, ts, xi, ai, ew);
         valError = info.best_perf;
         fileName = num2str(valError) + "_LRN_" + inputName;
-        save(ESPConst.PATH_LRNS + fileName, 'lrn', 'valError');
+        save(ESPConst.PATH_LRNS + fileName, 'tNN', 'valError');
         cons = [];
     end
 end
