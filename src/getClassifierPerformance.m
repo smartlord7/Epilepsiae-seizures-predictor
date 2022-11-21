@@ -9,21 +9,22 @@ function [r] = getClassifierPerformance(net, data, type, min, max)
 
     predicted = classify(nn.tNN, features);
 
-    TP = zeros(1,4);
-    TN = zeros(1,4);
-    FP = zeros(1,4);
-    FN = zeros(1,4);
+    l = length(length(ESPConst.CODES_CLASSES));
+    TP = zeros(1, l);
+    TN = zeros(1, l);
+    FP = zeros(1, l);
+    FN = zeros(1, l);
 
     typeClass = 0;
     if type == "detection"
-        typeClass = 3;
+        typeClass = ESPConst.CODE_CLASS_ALL_ICTAL;
     elseif type == "prediction"
-        typeClass = 2;
+        typeClass = ESPConst.CODE_CLASS_ALL_PREICTAL;
     else
         disp("Wrong type. Choose 'detection' or 'prediction'");
     end 
 
-    if min < 0 || max < 0 || mod(min,1) ~= 0 || mod(max,1) ~= 0
+    if min < 0 || max < 0 || mod(min, 1) ~= 0 || mod(max, 1) ~= 0
         disp("Insert only positive integers");
     end
     if max < min
@@ -43,19 +44,24 @@ function [r] = getClassifierPerformance(net, data, type, min, max)
     confusionM = confusionmat(classes, predicted);
     plotconfusion(classes, predicted);
 
-    for i=1:4
+    for j=1:l
+        i = ESPConst.CODES_CLASSES(j);
         TP(i) = confusionM(i,i);
         FN(i) = sum(confusionM(i,:)) - confusionM(i,i);
         FP(i) = sum(confusionM(:,i)) - confusionM(i,i);
         TN(i) = sum(confusionM(:)) - TP(i) - FN(i) - FP(i);
     end
     
-    accuracy = sum(predicted == classes)/numel(classes);
-    SE = TP(typeClass)/(TP(typeClass) + FN(typeClass));
-    SP = TN(typeClass)/(TN(typeClass) + FP(typeClass));
+    accuracy = sum(predicted == classes) / numel(classes);
+    SE = TP(typeClass) / (TP(typeClass) + FN(typeClass));
+    SP = TN(typeClass) / (TN(typeClass) + FP(typeClass));
     valError = nn.valError;
     options = nn.options;
-    r = struct("accuracy",accuracy, "SE", SE, "SP", SP, "valError", valError, "options", options);
+    r = struct("accuracy", accuracy, ...
+        "SE", SE, ...
+        "SP", SP, ...
+        "valError", valError, ...
+        "options", options);
 
     disp("Value Error: " + valError)
     disp("Accuracy: " + accuracy);
