@@ -1,17 +1,25 @@
-function [trainInput, valInput] = prepareInput(fileName, tRatio, vRatio, isTimeSeries)
+function [trainInput, valInput] = prepareInput(fileName, features, classes, tRatio, vRatio, isTimeSeries)
     tstRatio = ESPConst.RATIO_TEST;
-    dataset = load(fileName).data;
-    features = dataset.(ESPConst.PROP_DATASET_FEATURES);
-    classes = dataset.(ESPConst.PROP_DATASET_CLASSES);
+    dataset = struct;
+    if fileName ~= ""
+        dataset = load(fileName).data;
+        features = dataset.(ESPConst.PROP_DATASET_FEATURES);
+        classes = dataset.(ESPConst.PROP_DATASET_CLASSES);
+    end
+    
     [p, pv, ~] = dividerand(transpose(features), tRatio, vRatio, tstRatio);
     [t, tv, ~] = dividerand(transpose(classes), tRatio, vRatio, tstRatio);
     p = transpose(p);
     pv = transpose(pv);
     dataset.(ESPConst.PROP_DATASET_CLASSES) = categorical(t);
-    dataset.(ESPConst.PROP_DATASET_FEATURES) = mat2cell(p.', size(p,2), ones(size(p,1),1)).';
+    dataset.(ESPConst.PROP_DATASET_FEATURES) = con2seq(p');
     trainInput = dataset;
     dataset.(ESPConst.PROP_DATASET_CLASSES) = categorical(tv);
-    dataset.(ESPConst.PROP_DATASET_FEATURES) = mat2cell(pv.', size(pv,2), ones(size(pv,1),1)).';
+    if vRatio == 0.0
+        dataset.(ESPConst.PROP_DATASET_FEATURES) = con2seq(pv);
+    else
+        dataset.(ESPConst.PROP_DATASET_FEATURES) = con2seq(pv');
+    end
     valInput = dataset;
 end
 

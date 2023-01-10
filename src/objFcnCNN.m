@@ -7,6 +7,7 @@ function [objFcn] = objFcnCNN(p, t, pv, tv, inputName)
 
         layers = [
                imageInputLayer([ESPConst.N_INPUT_FEATURES, optVars.ImageHeight, 1])
+               batchNormalizationLayer
                convolution2dLayer([optVars.FilterSizeX optVars.FilterSizeY], optVars.NumFilters)
                fullyConnectedLayer(ESPConst.N_OUTPUT_CLASSES_ALL)
                softmaxLayer
